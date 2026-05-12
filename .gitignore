@@ -1,1 +1,66 @@
+# ========================
+# Hemmeligheter
+# ========================
 .env
+.env.local
+.env.*.local
+ 
+# ========================
+# Python
+# ========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+ 
+# Virtuelle miljøer
+venv/
+.venv/
+env/
+.env/
+ 
+# ========================
+# Node / React (dashboard)
+# ========================
+node_modules/
+dist/
+build/
+.next/
+*.local
+ 
+# ========================
+# Docker
+# ========================
+docker-compose.override.yml
+ 
+# ========================
+# Database
+# ========================
+*.sql
+*.sqlite
+*.db
+pgdata/
+ 
+# ========================
+# Editor
+# ========================
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+ 
+# ========================
+# Logger
+# ========================
+*.log
+logs/

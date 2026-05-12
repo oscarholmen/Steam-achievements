@@ -98,6 +98,21 @@ class Achievement(Base):
         return f"<Achievement {status} {self.api_name!r} appid={self.appid}>"
  
  
+class Webhook(Base):
+    """
+    Et registrert webhook-endepunkt.
+    Pollerens jobb er å POST-e hit når en ny achievement låses opp.
+    """
+    __tablename__ = "webhooks"
+ 
+    id         = Column(Integer, primary_key=True, autoincrement=True)
+    url        = Column(String, nullable=False, unique=True)
+    steam_id   = Column(String, nullable=False)   # Hvilken bruker å overvåke
+    is_active  = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.now)
+ 
+    def __repr__(self) -> str:
+        return f"<Webhook id={self.id} url={self.url!r} active={self.is_active}>"
  
  
 # ---------------------------------------------------------------------------
