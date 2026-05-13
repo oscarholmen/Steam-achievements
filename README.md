@@ -33,3 +33,4 @@ To experiment with the Steam API and to find out where i can find the usefull da
 ![Using the function GetPlayerAchievements in Postman](getAchievements.png)
 
 
+

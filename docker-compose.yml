@@ -1,0 +1,82 @@
+version: "3.9"
+ 
+services:
+ 
+  # ─────────────────────────────────────────
+  # Database
+  # ─────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: steam_achievements
+    volumes:
+      - pgdata:/var/lib/postgresql/data   # Data overlever restart
+    ports:
+      - "5433:5432"                       # Tilgjengelig lokalt for pgAdmin
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+ 
+  # ─────────────────────────────────────────
+  # Poller – henter fra Steam og sender webhooks
+  # ─────────────────────────────────────────
+  poller:
+    build: ./services/poller
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:${POSTGRES_PASSWORD}@postgres:5432/steam_achievements
+    depends_on:
+      postgres:
+        condition: service_healthy   # Venter til Postgres er klar
+    restart: unless-stopped
+ 
+  # ─────────────────────────────────────────
+  # API – webhook-registrering
+  # ─────────────────────────────────────────
+  # api:
+  #   build: ./services/api
+  #   env_file: .env
+  #   environment:
+  #     DATABASE_URL: postgresql+asyncpg://postgres:${POSTGRES_PASSWORD}@postgres:5432/steam_achievements
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   restart: unless-stopped
+ 
+  # ─────────────────────────────────────────
+  # Receiver – tar imot webhooks og beregner statistikk
+  # ─────────────────────────────────────────
+  # receiver:
+  #   build: ./services/receiver
+  #   env_file: .env
+  #   environment:
+  #     DATABASE_URL: postgresql+asyncpg://postgres:${POSTGRES_PASSWORD}@postgres:5432/steam_achievements
+  #   ports:
+  #     - "8001:8001"
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   restart: unless-stopped
+ 
+  # ─────────────────────────────────────────
+  # Dashboard – React-frontend
+  # ─────────────────────────────────────────
+  # dashboard:
+  #   build: ./dashboard
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - receiver
+  #   restart: unless-stopped
+ 
+# ─────────────────────────────────────────
+# Volumes – Postgres-data overlever restart
+# ─────────────────────────────────────────
+volumes:
+  pgdata:
