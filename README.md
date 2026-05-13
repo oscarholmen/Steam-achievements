@@ -37,7 +37,7 @@ I would rather submit code I fully understand and can defend than code written i
  
 ### Why Power BI for the dashboard
  
-Power BI connects natively to PostgreSQL and provides production-grade visualizations with minimal code. Since the case emphasizes backend quality as the primary evaluation criteria, this was a pragmatic choice that saved time for the more complex backend work.
+Power BI connects natively to PostgreSQL and provides good visualizations with minimal code. I think the frontend part would be considerlly easier to do using Typecript or similar languages. 
  
 ---
  
@@ -50,7 +50,7 @@ steam-achievements/
 ├── services/
 │   └── poller/
 │       ├── main.py          ← entry point, runs in Docker
-│       ├── steam_client.py  ← Steam API wrapper
+│       ├── steam_api.py     ← Steam API wrapper
 │       ├── database.py      ← PostgreSQL setup and models
 │       ├── poller.py        ← achievement diff logic
 │       └── webhooks.py      ← Slack webhook notifications
@@ -63,7 +63,7 @@ steam-achievements/
 **`main.py`**
 Entry point for the Docker container. Starts a scheduler that polls Steam every 15 minutes and triggers webhook notifications when new achievements are detected. No logic is defined here – it imports from the other files and wires them together.
  
-**`steam_client.py`**
+**`steam_api.py`**
 Async wrapper around the Steam Web API (`https://api.steampowered.com`). Handles fetching owned games and achievements per game, with error handling for private profiles and games without achievements.
  
 **`database.py`**
@@ -85,30 +85,18 @@ Sends a formatted message to a Slack channel whenever a new achievement is unloc
 - A Steam API key – get one at [steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey)
 - Your Steam ID (64-bit format)
 - A Slack webhook URL (optional – for notifications)
+**Note**
+Stated in the .env file is my api key, stream id, and webhook to my personal channel on slack 
+
 ### 1. Clone the repository
  
 ```bash
 git clone https://github.com/oscarholmen/Steam-achievements.git
 cd Steam-achievements
 ```
+
  
-### 2. Configure environment variables
- 
-```bash
-cp .env.example .env
-```
- 
-Edit `.env` and fill in your values:
- 
-```env
-STEAM_API_KEY=your_steam_api_key
-STEAM_ID=your_steam_id
-POSTGRES_PASSWORD=your_password
-POLL_INTERVAL_MINUTES=15
-SLACK_WEBHOOK_URL=your_slack_webhook_url
-```
- 
-### 3. Start the system
+### 2. Start the system
  
 ```bash
 docker-compose up --build
@@ -151,7 +139,7 @@ When a new achievement is unlocked, a message is automatically posted to a Slack
  
 ## Dashboard
  
-Statistics are visualized in Power BI, connected directly to the PostgreSQL database.
+Statistics are visualized in Power BI, connected to the PostgreSQL database.
  
 **Metrics displayed:**
 - Total games with achievements
@@ -160,3 +148,4 @@ Statistics are visualized in Power BI, connected directly to the PostgreSQL data
 - Achievements by weekday
 - Cumulative achievements over time
 
+![](PowerBiReport.png)
