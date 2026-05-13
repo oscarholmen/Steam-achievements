@@ -157,7 +157,6 @@ Statistics are visualized in Power BI, connected directly to the PostgreSQL data
 - Total games with achievements
 - Total achievements unlocked
 - Average achievements per game
-- Best streak of consecutive days with unlocks
 - Achievements by weekday
 - Cumulative achievements over time
 
